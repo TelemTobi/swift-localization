@@ -41,4 +41,4 @@
 /// }
 ///```
 @attached(member, names: arbitrary)
-public macro Localizable() = #externalMacro(module: "LocalizationMacros", type: "LocalizationMacro")
+public macro Localizable() = #externalMacro(module: "LocalizationMacros", type: "LocalizableMacro")

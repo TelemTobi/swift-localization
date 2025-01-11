@@ -82,7 +82,7 @@ public struct LocalizableMacro: MemberMacro {
 }
 
 @main
-struct LocalizedPlugin: CompilerPlugin {
+struct LocalizablePlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         LocalizableMacro.self,
     ]

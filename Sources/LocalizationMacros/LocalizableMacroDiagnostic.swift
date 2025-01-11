@@ -20,7 +20,7 @@ extension LocalizableMacroDiagnostic: DiagnosticMessage {
     var message: String {
         switch self {
         case .notAnEnum:
-            return "'Localized' macro can only be attached to enums"
+            return "'Localizable' macro can only be attached to enums"
         }
     }
 }
