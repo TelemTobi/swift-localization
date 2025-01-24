@@ -6,8 +6,8 @@
 /// ### Key Formatting
 /// The `keyFormat` argument allows you to specify how the enum cases should be transformed into localization keys:
 /// - `.camelCase` (default): Converts cases to camelCase (e.g., `myExampleCase` becomes `myExampleCase`).
-/// - `.snakeLowerCase`: Converts cases to lower_snake_case (e.g., `myExampleCase` becomes `my_example_case`).
-/// - `.snakeUpperCase`: Converts cases to UPPER_SNAKE_CASE (e.g., `myExampleCase` becomes `MY_EXAMPLE_CASE`).
+/// - `.lowerSnakeCase`: Converts cases to lower_snake_case (e.g., `myExampleCase` becomes `my_example_case`).
+/// - `.upperSnakeCase`: Converts cases to UPPER_SNAKE_CASE (e.g., `myExampleCase` becomes `MY_EXAMPLE_CASE`).
 ///
 /// ### Associated Values
 /// Associated values in `enum` cases simplify the formatting of localized strings by mapping directly to arguments for
@@ -51,9 +51,9 @@
 /// }
 /// ```
 ///
-/// #### Example 2: Custom Key Format (`.snakeUpperCase`)
+/// #### Example 2: Custom Key Format (`.upperSnakeCase`)
 /// ```swift
-/// @Localizable(keyFormat: .snakeUpperCase)
+/// @Localizable(keyFormat: .upperSnakeCase)
 /// enum Localization {
 ///     case helloWorld
 ///     case itemCount(count: Int)
@@ -62,7 +62,7 @@
 ///
 /// Expansion:
 /// ```swift
-/// @Localizable(keyFormat: .snakeUpperCase)
+/// @Localizable(keyFormat: .upperSnakeCase)
 /// enum Localization {
 ///     case helloWorld
 ///     case itemCount(count: Int)
@@ -97,8 +97,8 @@
 /// ```swift
 /// public enum LocalizationKeyFormat {
 ///     case camelCase
-///     case snakeLowerCase
-///     case snakeUpperCase
+///     case lowerSnakeCase
+///     case upperSnakeCase
 /// }
 /// ```
 @attached(member, names: arbitrary)
@@ -106,6 +106,6 @@ public macro Localizable(keyFormat: LocalizationKeyFormat = .camelCase) = #exter
 
 public enum LocalizationKeyFormat {
     case camelCase
-    case snakeLowerCase
-    case snakeUpperCase
+    case lowerSnakeCase
+    case upperSnakeCase
 }
