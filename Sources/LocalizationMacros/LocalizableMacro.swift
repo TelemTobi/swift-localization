@@ -79,6 +79,16 @@ public struct LocalizableMacro: MemberMacro {
             .map { ($0.offset == 0 ? "" : " ") + "value\($0.offset)" }
             .joined(separator: ",")
     }
+    
+    private static func extractArgument(_ argumentType: ArgumentType, outOf node: AttributeSyntax) -> String? {
+        guard case let .argumentList(arguments) = node.arguments,
+              let argument = arguments.first(where: { $0.label?.text == argumentType.rawValue }) else { return nil }
+        
+        return switch argumentType {
+        case .keyFormat:
+            argument.expression.as(MemberAccessExprSyntax.self)?.declName.baseName.text
+        }
+    }
 }
 
 @main
@@ -86,6 +96,10 @@ struct LocalizablePlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         LocalizableMacro.self,
     ]
+}
+
+fileprivate enum ArgumentType: String {
+    case keyFormat
 }
 
 fileprivate extension String {
