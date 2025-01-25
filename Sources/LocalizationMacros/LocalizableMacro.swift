@@ -18,8 +18,9 @@ public struct LocalizableMacro: MemberMacro {
         let members = enumDecl.memberBlock.members
         let caseDecls = members.compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
         let elements = caseDecls.flatMap { $0.elements }
+        let keyFormat = extractArgument(.keyFormat, outOf: node)
         
-        let localizedVar = try localizedVariableDecl(with: elements)
+        let localizedVar = try localizedVariableDecl(with: elements, keyFormat)
         let localizeFuncDecl = try localizeFuncionDecl()
         
         return [
@@ -37,38 +38,30 @@ public struct LocalizableMacro: MemberMacro {
         }
     }
     
-    private static func localizedVariableDecl(with elements: [EnumCaseElementListSyntax.Element]) throws -> VariableDeclSyntax {
+    private static func localizedVariableDecl(with elements: [EnumCaseElementListSyntax.Element], _ keyFormat: String?) throws -> VariableDeclSyntax {
         try VariableDeclSyntax("public var localized: String") {
             try SwitchExprSyntax("switch self") {
                 for element in elements {
-                    caseSyntax(for: element)
+                    caseSyntax(for: element, using: keyFormat)
                 }
             }
         }
     }
     
-    private static func caseSyntax(for element: EnumCaseElementSyntax) -> SwitchCaseSyntax {
-        if element.parameterClause != nil {
-            return formatLocalized(from: element)
+    private static func caseSyntax(for element: EnumCaseElementSyntax, using keyFormat: String?) -> SwitchCaseSyntax {
+        if let parameterList = element.parameterClause?.parameters {
+            return SwitchCaseSyntax(
+            """
+            case let .\(element.name)(\(raw: formatArguments(from: parameterList))):
+                String(format: localized("\(raw: "\(element.name.toLocalizedKey(using: keyFormat))")"),\(raw: formatArguments(from: parameterList)))
+            """
+            )
         }
-        return localize(element)
-    }
-
-    private static func localize(_ element: EnumCaseElementSyntax) -> SwitchCaseSyntax {
-        SwitchCaseSyntax(
-        """
-        case .\(element.name):
-            localized("\(raw: "\(element.name.toLocalizedKey)")")
-        """
-        )
-    }
-    
-    private static func formatLocalized(from element: EnumCaseElementSyntax) -> SwitchCaseSyntax {
-        let parameterList = element.parameterClause?.parameters ?? []
+        
         return SwitchCaseSyntax(
         """
-        case let .\(element.name)(\(raw: formatArguments(from: parameterList))):
-            String(format: localized("\(raw: "\(element.name.toLocalizedKey)")"),\(raw: formatArguments(from: parameterList)))
+        case .\(element.name):
+            localized("\(raw: "\(element.name.toLocalizedKey(using: keyFormat))")")
         """
         )
     }
@@ -79,6 +72,16 @@ public struct LocalizableMacro: MemberMacro {
             .map { ($0.offset == 0 ? "" : " ") + "value\($0.offset)" }
             .joined(separator: ",")
     }
+    
+    private static func extractArgument(_ argumentType: ArgumentType, outOf node: AttributeSyntax) -> String? {
+        guard case let .argumentList(arguments) = node.arguments,
+              let argument = arguments.first(where: { $0.label?.text == argumentType.rawValue }) else { return nil }
+        
+        return switch argumentType {
+        case .keyFormat:
+            argument.expression.as(MemberAccessExprSyntax.self)?.declName.baseName.text
+        }
+    }
 }
 
 @main
@@ -88,22 +91,33 @@ struct LocalizablePlugin: CompilerPlugin {
     ]
 }
 
+fileprivate enum ArgumentType: String {
+    case keyFormat
+}
+
+fileprivate extension TokenSyntax {
+    
+    func toLocalizedKey(using keyFormat: String?) -> String {
+        switch keyFormat {
+        case "lowerSnakeCase":
+            "\(self)".snakeCased.lowercased().removingBackticks
+        case "upperSnakeCase":
+            "\(self)".snakeCased.uppercased().removingBackticks
+        default:
+            "\(self)".removingBackticks
+        }
+    }
+}
+
 fileprivate extension String {
     var snakeCased: String {
         let pattern = "(?<=\\w)(?=[A-Z])|(?<=[A-Z])(?=[A-Z])"
         let regex = try? NSRegularExpression(pattern: pattern, options: [])
         let range = NSRange(location: .zero, length: count)
-        return regex?.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "$1$3_$2$4").uppercased() ?? self
+        return regex?.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "$1$3_$2$4") ?? self
     }
     
-    var backticksRemoved: String {
+    var removingBackticks: String {
         replacingOccurrences(of: "`", with: "")
-    }
-}
-
-fileprivate extension TokenSyntax {
-    
-    var toLocalizedKey: String {
-        "\(self)".snakeCased.backticksRemoved
     }
 }
