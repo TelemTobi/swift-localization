@@ -65,7 +65,7 @@ final class LocalizedTests: XCTestCase {
         #if canImport(LocalizationMacros)
         assertMacroExpansion(
             """
-            @Localizable
+            @Localizable(keyFormat: .upperSnakeCase)
             enum Localization {
                 case a
                 case A
@@ -124,7 +124,7 @@ final class LocalizedTests: XCTestCase {
         #if canImport(LocalizationMacros)
         assertMacroExpansion(
             """
-            @Localizable
+            @Localizable(keyFormat: .upperSnakeCase)
             enum Localization {
                 case noValues
                 case singleString(stringValue: String)
@@ -207,7 +207,7 @@ final class LocalizedTests: XCTestCase {
         #if canImport(LocalizationMacros)
         assertMacroExpansion(
             """
-            @Localizable
+            @Localizable(keyFormat: .upperSnakeCase)
             enum Localization {
                 case a
                 case a1
@@ -258,7 +258,7 @@ final class LocalizedTests: XCTestCase {
         #if canImport(LocalizationMacros)
         assertMacroExpansion(
             """
-            @Localizable
+            @Localizable(keyFormat: .upperSnakeCase)
             enum Localization {
                 case `case`
                 case `continue`
