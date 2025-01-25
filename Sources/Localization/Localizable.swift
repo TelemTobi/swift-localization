@@ -104,8 +104,40 @@
 @attached(member, names: arbitrary)
 public macro Localizable(keyFormat: LocalizationKeyFormat = .camelCase) = #externalMacro(module: "LocalizationMacros", type: "LocalizableMacro")
 
+/// Represents the available formats for transforming enum cases into localization keys.
+///
+/// The `LocalizationKeyFormat` enum defines how the names of `enum` cases are converted into string keys for use in localization files.
+/// This allows flexibility in adapting the key format to match the naming conventions used in the localization system.
+///
+/// ### Available Formats:
+/// - **`camelCase`**: Enum cases are transformed into camelCase keys (e.g., `exampleCase` becomes `exampleCase`).
+/// - **`lowerSnakeCase`**: Enum cases are transformed into lower_snake_case keys (e.g., `exampleCase` becomes `example_case`).
+/// - **`upperSnakeCase`**: Enum cases are transformed into UPPER_SNAKE_CASE keys (e.g., `exampleCase` becomes `EXAMPLE_CASE`).
+///
+/// This enum is used as an argument in the `Localizable` macro to customize the key format.
 public enum LocalizationKeyFormat {
+    
+    /// Transforms enum cases into `camelCase` keys.
+    ///
+    /// Example:
+    /// ```swift
+    /// case exampleCase -> "exampleCase"
+    /// ```
     case camelCase
+    
+    /// Transforms enum cases into `lower_snake_case` keys.
+    ///
+    /// Example:
+    /// ```swift
+    /// case exampleCase -> "example_case"
+    /// ```
     case lowerSnakeCase
+    
+    /// Transforms enum cases into `UPPER_SNAKE_CASE` keys.
+    ///
+    /// Example:
+    /// ```swift
+    /// case exampleCase -> "EXAMPLE_CASE"
+    /// ```
     case upperSnakeCase
 }
