@@ -13,16 +13,6 @@ A Swift macro-powered package that simplifies string localization in your iOS, m
 - 💪 Compile-time validation
 - 🎯 Support for string interpolation with associated values
 
-## Installation
-
-Add this package to your project using Swift Package Manager by adding it to your `Package.swift` dependencies:
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/telemtobi/swift-localization.git", from: "1.0.0")
-]
-```
-
 ## Quick Start
 
 1. Create an enum and annotate it with `@Localizable`:
@@ -54,7 +44,23 @@ let priceText = Strings.totalPrice(amount: 99.99).localized
 "totalPrice" = "Total: $%.2f";
 ```
 
-## Key Formatting
+## Installation
+
+### Swift Package Manager
+
+Add **Localization** to your project via Swift Package Manager:  
+1. In Xcode, go to **File > Swift Packages > Add Package Dependency**.  
+2. Enter the repository URL:
+
+   ```
+   https://github.com/telemtobi/swift-localization.git
+   ```
+
+3. Select your preferred version and finish.
+
+## Usage
+
+### Key Formatting
 
 You can customize how the enum cases are converted to localization keys using the `keyFormat` parameter:
 
@@ -95,7 +101,7 @@ let alert = Alerts.deleteConfirmation(itemName: "Document").localized
 let progress = Alerts.syncProgress(completed: 5, total: 10).localized
 ```
 
-## String Extensions
+### String Extensions
 
 To make your localized strings even more convenient to use, you can add extensions to `String` and `LocalizedStringKey`. This allows for a more natural and SwiftUI-friendly syntax:
 
