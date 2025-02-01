@@ -11,7 +11,7 @@ let package = Package(
         .library(name: "Localization", targets: ["Localization"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax.git", "509.0.0"..<"601.0.0")
+        .package(url: "https://github.com/apple/swift-syntax", "509.0.0"..<"601.0.0")
     ],
     targets: [
         .macro(

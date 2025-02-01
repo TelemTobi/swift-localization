@@ -11,7 +11,7 @@ let testMacros: [String: Macro.Type] = [
 ]
 #endif
 
-final class LocalizedTests: XCTestCase {
+final class LocalizableTests: XCTestCase {
     
     func testNotAnEnumDiagnostic() {
         #if canImport(LocalizationMacros)
